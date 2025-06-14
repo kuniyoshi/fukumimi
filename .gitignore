@@ -39,3 +39,6 @@ Thumbs.db
 # Local data files
 *.cookie
 *.session
+
+# Claude AI assistant files
+.claude/
