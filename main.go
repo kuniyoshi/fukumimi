@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/kuniyoshi/fukumimi/cmd"
 
 func main() {
-	fmt.Println("Hello, World!")
+	cmd.Execute()
 }

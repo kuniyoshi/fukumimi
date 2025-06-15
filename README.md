@@ -60,3 +60,7 @@ Merge new radio show episodes to local state manage.
 - Uses browser-like form submission to support login with auto-filled credentials
 - Tracks state using plain text (Markdown) for readability and Git-friendly diffs
 - Written in Go for fast execution and easy distribution
+
+## Specification
+
+https://kitoakari-fc.com/slogin.php

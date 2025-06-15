@@ -8,11 +8,12 @@ fukumimi is a CLI tool for retrieving and tracking radio show episodes from a lo
 
 ## Development Status
 
-This is a newly initialized project. The implementation has not begun yet, but the design specifies:
-- Single binary Go CLI application
-- Cookie-based session management
-- Local state tracking in Markdown
-- Commands: `login`, `fetch`, `merge`
+The project now has basic CLI structure with:
+- Cobra-based command framework
+- Login command implemented with cookie persistence
+- HTTP client with session management
+
+Remaining commands to implement: `fetch`, `merge`
 
 ## Architecture Notes
 
@@ -25,8 +26,18 @@ The intended architecture (from README.md):
 
 ## Development Guidelines
 
-Since this is a greenfield Go project:
-1. Create `go.mod` when initializing the Go module
-2. Follow standard Go project layout conventions
-3. Implement the three core commands as described in the README
-4. Use standard Go testing practices once code is written
+1. Follow standard Go project layout conventions
+2. Commands are in `cmd/` directory
+3. Internal packages in `internal/` directory
+4. Use `make build` to build the binary
+5. Use `make run-login` to test the login command
+6. Cookie files are stored in user's home directory as `.fukumimi_cookies`
+
+## Build and Test Commands
+
+```bash
+make build      # Build the binary
+make run        # Run the application
+make test       # Run tests (when available)
+make fmt        # Format code
+```

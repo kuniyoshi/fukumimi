@@ -11,6 +11,10 @@ build:
 run:
 	go run main.go
 
+# Run with login command
+run-login:
+	go run main.go login
+
 # Clean build artifacts
 clean:
 	go clean
