@@ -7,9 +7,7 @@ import (
 
 type Episode struct {
 	Number     string    // e.g., "#037"
-	Title      string    // Episode title
 	Date       time.Time // Parsed date
-	DateString string    // Original date string like "6/11(水)"
 	Year       int       // Year from the listing page like "2025.06.02"
 	URL        string    // Episode URL
 	IsListened bool      // Whether the episode has been listened to

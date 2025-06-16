@@ -128,24 +128,12 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 
 		// Extract date (e.g., "6/11(水)")
 		if dateMatch := regexp.MustCompile(`(\d{1,2})/(\d{1,2})\([^)]+\)`).FindStringSubmatch(text); len(dateMatch) > 2 {
-			episode.DateString = dateMatch[0]
 			month, _ := strconv.Atoi(dateMatch[1])
 			day, _ := strconv.Atoi(dateMatch[2])
 			
 			if month > 0 && day > 0 {
 				episode.Date = time.Date(currentYear, time.Month(month), day, 0, 0, 0, 0, time.Local)
 			}
-		}
-
-		// Extract title - clean up the text
-		title := text
-		title = regexp.MustCompile(`\d{1,2}/\d{1,2}\([^)]+\)`).ReplaceAllString(title, "")
-		title = regexp.MustCompile(`#\d+`).ReplaceAllString(title, "")
-		title = strings.ReplaceAll(title, "STREAMING", "")
-		title = strings.TrimSpace(title)
-		
-		if title != "" {
-			episode.Title = title
 		}
 
 		// Try to find a link in this element or its children
