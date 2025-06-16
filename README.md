@@ -27,9 +27,9 @@ Retrieve the radio show episodes from the fan club site and store them locally.
 
 ```bash
 % fukumimi fetch
-[ ] 2025-06-11 #38
-[ ] 2025-05-28 #37
-[ ] 2025-05-09 #36
+[ ] 2025-06-11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
+[ ] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[ ] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 ...
 ```
 
@@ -39,17 +39,17 @@ Merge new radio show episodes to local state manage.
 
 ```bash
 % fukumimi fetch
-[ ] 2025-06-11 #38
-[ ] 2025-05-28 #37
-[ ] 2025-05-09 #36
+[ ] 2025-06-11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
+[ ] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[ ] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 ...
 % cat local
-[x] 2025-05-28 #37
-[x] 2025-05-09 #36
+[x] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[x] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 % fukumimi fetch | fukumimi merge local
-[ ] 2025-06-11 #38
-[x] 2025-05-28 #37
-[x] 2025-05-09 #36
+[ ] 2025-06-11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
+[x] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[x] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 ```
 
 ## Design
@@ -63,4 +63,12 @@ Merge new radio show episodes to local state manage.
 
 ## Specification
 
+*Login URL*
 https://kitoakari-fc.com/slogin.php
+
+*Radio show episodes*
+
+https://kitoakari-fc.com/special_contents/?page=1
+
+The URL has pagenation.
+

@@ -44,7 +44,6 @@ func (c *Client) Login() error {
 	if err := c.loadCookies(); err == nil {
 		// Test if cookies are still valid
 		if c.isAuthenticated() {
-			fmt.Println("Using existing session...")
 			return nil
 		}
 	}
@@ -78,6 +77,10 @@ func (c *Client) Login() error {
 	}
 
 	return nil
+}
+
+func (c *Client) Get(url string) (*http.Response, error) {
+	return c.httpClient.Get(url)
 }
 
 func (c *Client) getCredentials() (string, string, error) {
