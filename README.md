@@ -68,7 +68,7 @@ https://kitoakari-fc.com/slogin.php
 
 *Radio show episodes*
 
-https://kitoakari-fc.com/special_contents/?page=1
+https://kitoakari-fc.com/special_contents/?category_id=4&page=1
 
 The URL has pagenation.
 

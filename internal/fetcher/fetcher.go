@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	episodesURL = "https://kitoakari-fc.com/special_contents/?page=%d"
+	episodesURL = "https://kitoakari-fc.com/special_contents/?category_id=4&page=%d"
 )
 
 type Fetcher struct {
