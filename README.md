@@ -27,9 +27,9 @@ Retrieve the radio show episodes from the fan club site and store them locally.
 
 ```bash
 % fukumimi fetch
-[ ] 2025-06-11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
-[ ] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[ ] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+[ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
+[ ] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[ ] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 ...
 ```
 
@@ -39,17 +39,17 @@ Merge new radio show episodes to local state manage.
 
 ```bash
 % fukumimi fetch
-[ ] 2025-06-11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
-[ ] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[ ] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+[ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
+[ ] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[ ] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 ...
 % cat local
-[x] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[x] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+[x] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[x] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 % fukumimi fetch | fukumimi merge local
-[ ] 2025-06-11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
-[x] 2025-05-28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[x] 2025-05-09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+[ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
+[x] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+[x] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
 ```
 
 ## Design

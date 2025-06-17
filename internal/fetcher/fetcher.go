@@ -86,24 +86,6 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 	}
 
 	var episodes []models.Episode
-	var currentYear int
-
-	// Silent operation - no debug output
-
-	// First, try to find the current year from any date on the page
-	doc.Find("*").Each(func(i int, s *goquery.Selection) {
-		text := s.Text()
-		if yearMatch := regexp.MustCompile(`(\d{4})\.\d{2}\.\d{2}`).FindStringSubmatch(text); len(yearMatch) > 1 {
-			if year, err := strconv.Atoi(yearMatch[1]); err == nil && currentYear == 0 {
-				currentYear = year
-			}
-		}
-	})
-
-	// If no year found, use current year
-	if currentYear == 0 {
-		currentYear = time.Now().Year()
-	}
 
 
 	// Look for all text containing STREAMING
@@ -116,10 +98,7 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 			return
 		}
 
-
-		episode := models.Episode{
-			Year: currentYear,
-		}
+		episode := models.Episode{}
 
 		// Extract episode number (e.g., "#037")
 		if numberMatch := regexp.MustCompile(`#(\d+)`).FindStringSubmatch(text); len(numberMatch) > 0 {
@@ -127,12 +106,15 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 		}
 
 		// Extract date (e.g., "6/11(水)")
+		// Since we can't determine the year reliably, we'll use year 0 as a placeholder
+		// The actual year doesn't matter for sorting by month/day
 		if dateMatch := regexp.MustCompile(`(\d{1,2})/(\d{1,2})\([^)]+\)`).FindStringSubmatch(text); len(dateMatch) > 2 {
 			month, _ := strconv.Atoi(dateMatch[1])
 			day, _ := strconv.Atoi(dateMatch[2])
 			
 			if month > 0 && day > 0 {
-				episode.Date = time.Date(currentYear, time.Month(month), day, 0, 0, 0, 0, time.Local)
+				// Use year 0 as placeholder - we'll format without year in output
+				episode.Date = time.Date(0, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 			}
 		}
 
@@ -192,19 +174,27 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 		hasMore = pageLinks.Length() > 0
 	}
 
-
 	return episodes, hasMore, nil
 }
 
 func (f *Fetcher) GenerateMarkdown(episodes []models.Episode) string {
-	// Sort episodes by date (newest first)
+	// Sort episodes by episode number (newest/highest first)
 	sortedEpisodes := make([]models.Episode, len(episodes))
 	copy(sortedEpisodes, episodes)
 	
-	// Simple bubble sort for now
+	// Extract number from episode number string (e.g., "#038" -> 38)
+	getEpisodeNum := func(ep models.Episode) int {
+		if match := regexp.MustCompile(`#(\d+)`).FindStringSubmatch(ep.Number); len(match) > 1 {
+			num, _ := strconv.Atoi(match[1])
+			return num
+		}
+		return 0
+	}
+	
+	// Simple bubble sort by episode number (descending)
 	for i := 0; i < len(sortedEpisodes)-1; i++ {
 		for j := 0; j < len(sortedEpisodes)-i-1; j++ {
-			if sortedEpisodes[j].Date.Before(sortedEpisodes[j+1].Date) {
+			if getEpisodeNum(sortedEpisodes[j]) < getEpisodeNum(sortedEpisodes[j+1]) {
 				sortedEpisodes[j], sortedEpisodes[j+1] = sortedEpisodes[j+1], sortedEpisodes[j]
 			}
 		}
