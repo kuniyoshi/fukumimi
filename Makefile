@@ -1,4 +1,4 @@
-.PHONY: build run clean test fmt lint install
+.PHONY: build run clean test fmt vet staticcheck lint check install build-all
 
 # Binary name
 BINARY_NAME=fukumimi
@@ -28,9 +28,22 @@ test:
 fmt:
 	go fmt ./...
 
+# Run go vet
+vet:
+	go vet ./...
+
+# Run staticcheck (requires staticcheck to be installed)
+# Install: go install honnef.co/go/tools/cmd/staticcheck@latest
+staticcheck:
+	staticcheck ./...
+
 # Run linter (requires golangci-lint)
+# Install: https://golangci-lint.run/usage/install/
 lint:
 	golangci-lint run
+
+# Run all checks (fmt, vet, staticcheck)
+check: fmt vet staticcheck
 
 # Install the binary to GOPATH/bin
 install:

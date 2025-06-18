@@ -25,7 +25,7 @@ the local file in-place.`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		filename := args[0]
-		
+
 		// Check if local file exists
 		if _, err := os.Stat(filename); os.IsNotExist(err) {
 			// If file doesn't exist and replace flag is set, we'll create it
@@ -33,15 +33,15 @@ the local file in-place.`,
 				return fmt.Errorf("local file not found: %s", filename)
 			}
 		}
-		
+
 		m := merger.New()
-		
+
 		// Read episodes from stdin
 		newEpisodes, err := m.ReadEpisodesFromStdin()
 		if err != nil {
 			return fmt.Errorf("failed to read episodes from stdin: %w", err)
 		}
-		
+
 		// Read local episodes with listened status (if file exists)
 		var localEpisodes []models.Episode
 		if _, err := os.Stat(filename); err == nil {
@@ -50,13 +50,13 @@ the local file in-place.`,
 				return fmt.Errorf("failed to read local episodes: %w", err)
 			}
 		}
-		
+
 		// Merge episodes preserving listened status
 		merged := m.MergeEpisodes(newEpisodes, localEpisodes)
-		
+
 		// Output merged result
 		output := m.GenerateOutput(merged)
-		
+
 		if replaceFile {
 			// Write to file
 			if err := os.WriteFile(filename, []byte(output), 0644); err != nil {
@@ -66,7 +66,7 @@ the local file in-place.`,
 			// Output to stdout
 			fmt.Print(output)
 		}
-		
+
 		return nil
 	},
 }

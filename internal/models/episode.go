@@ -17,7 +17,7 @@ func (e Episode) String() string {
 	if e.IsListened {
 		listenedMark = "[x]"
 	}
-	
+
 	// Format: [ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
 	if e.URL != "" {
 		return fmt.Sprintf("%s %02d/%02d [%s](%s)", listenedMark, e.Date.Month(), e.Date.Day(), e.Number, e.URL)

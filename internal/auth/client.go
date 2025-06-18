@@ -109,15 +109,15 @@ func (c *Client) isAuthenticated() bool {
 	// This is a simplified check - adjust based on actual site behavior
 	u, _ := url.Parse(config.LoginURL)
 	cookies := c.jar.Cookies(u)
-	
+
 	// Check if we have session cookies
 	for _, cookie := range cookies {
 		if strings.Contains(strings.ToLower(cookie.Name), "session") ||
-		   strings.Contains(strings.ToLower(cookie.Name), "auth") {
+			strings.Contains(strings.ToLower(cookie.Name), "auth") {
 			return true
 		}
 	}
-	
+
 	return false
 }
 

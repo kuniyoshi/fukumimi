@@ -60,7 +60,7 @@ func (f *Fetcher) FetchEpisodes() ([]models.Episode, error) {
 		if !hasMore && len(episodes) == 0 {
 			break
 		}
-		
+
 		page++
 	}
 
@@ -69,7 +69,7 @@ func (f *Fetcher) FetchEpisodes() ([]models.Episode, error) {
 
 func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 	url := fmt.Sprintf(episodesURL, page)
-	
+
 	resp, err := f.client.Get(url)
 	if err != nil {
 		return nil, false, err
@@ -87,12 +87,11 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 
 	var episodes []models.Episode
 
-
 	// Look for all text containing STREAMING
 	doc.Find("*").Each(func(i int, s *goquery.Selection) {
 		// Get direct text content (not including children)
 		text := s.Text()
-		
+
 		// Skip if this doesn't contain STREAMING
 		if !strings.Contains(text, "STREAMING") {
 			return
@@ -111,7 +110,7 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 		if dateMatch := regexp.MustCompile(`(\d{1,2})/(\d{1,2})\([^)]+\)`).FindStringSubmatch(text); len(dateMatch) > 2 {
 			month, _ := strconv.Atoi(dateMatch[1])
 			day, _ := strconv.Atoi(dateMatch[2])
-			
+
 			if month > 0 && day > 0 {
 				// Use year 0 as placeholder - we'll format without year in output
 				episode.Date = time.Date(0, time.Month(month), day, 0, 0, 0, 0, time.UTC)
@@ -159,7 +158,7 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 		"a:contains('Next')",
 		".page-link:contains('>')",
 	}
-	
+
 	for _, pattern := range nextPatterns {
 		if doc.Find(pattern).Length() > 0 {
 			hasMore = true
@@ -181,7 +180,7 @@ func (f *Fetcher) GenerateMarkdown(episodes []models.Episode) string {
 	// Sort episodes by episode number (newest/highest first)
 	sortedEpisodes := make([]models.Episode, len(episodes))
 	copy(sortedEpisodes, episodes)
-	
+
 	// Extract number from episode number string (e.g., "#038" -> 38)
 	getEpisodeNum := func(ep models.Episode) int {
 		if match := regexp.MustCompile(`#(\d+)`).FindStringSubmatch(ep.Number); len(match) > 1 {
@@ -190,7 +189,7 @@ func (f *Fetcher) GenerateMarkdown(episodes []models.Episode) string {
 		}
 		return 0
 	}
-	
+
 	// Simple bubble sort by episode number (descending)
 	for i := 0; i < len(sortedEpisodes)-1; i++ {
 		for j := 0; j < len(sortedEpisodes)-i-1; j++ {

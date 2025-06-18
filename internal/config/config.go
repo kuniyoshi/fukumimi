@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	LoginURL    = "https://kitoakari-fc.com/slogin.php"
-	CookieFile  = ".fukumimi_cookies"
+	LoginURL   = "https://kitoakari-fc.com/slogin.php"
+	CookieFile = ".fukumimi_cookies"
 )
 
 func GetCookieFilePath() string {

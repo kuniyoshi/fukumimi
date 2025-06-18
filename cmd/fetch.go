@@ -18,11 +18,11 @@ var fetchCmd = &cobra.Command{
 		if err != nil {
 			return fmt.Errorf("failed to fetch episodes: %w", err)
 		}
-		
+
 		// Output markdown to STDOUT
 		markdown := f.GenerateMarkdown(episodes)
 		fmt.Print(markdown)
-		
+
 		return nil
 	},
 }

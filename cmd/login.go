@@ -13,12 +13,12 @@ var loginCmd = &cobra.Command{
 	Long:  `Authenticate with the fan club website and store session cookies locally.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("Starting login process...")
-		
+
 		client := auth.NewClient()
 		if err := client.Login(); err != nil {
 			return fmt.Errorf("login failed: %w", err)
 		}
-		
+
 		fmt.Println("Login successful!")
 		return nil
 	},
