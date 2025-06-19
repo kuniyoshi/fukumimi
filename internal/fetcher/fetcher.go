@@ -9,30 +9,26 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/kuniyoshi/fukumimi/internal/auth"
 	"github.com/kuniyoshi/fukumimi/internal/models"
 )
 
 const (
 	episodesURL = "https://kitoakari-fc.com/special_contents/?category_id=4&page=%d"
+	// UserAgent identifies this client
+	UserAgent = "Fukumimi/0.1.0 (https://github.com/kuniyoshi/fukumimi)"
 )
 
 type Fetcher struct {
-	client *auth.Client
+	client *http.Client
 }
 
 func New() *Fetcher {
 	return &Fetcher{
-		client: auth.NewClient(),
+		client: &http.Client{},
 	}
 }
 
 func (f *Fetcher) FetchEpisodes() ([]models.Episode, error) {
-	// First, ensure we're logged in
-	if err := f.client.Login(); err != nil {
-		return nil, fmt.Errorf("failed to login: %w", err)
-	}
-
 	var allEpisodes []models.Episode
 	page := 1
 	maxPages := 100 // Safety limit to prevent infinite loops
@@ -70,7 +66,14 @@ func (f *Fetcher) FetchEpisodes() ([]models.Episode, error) {
 func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 	url := fmt.Sprintf(episodesURL, page)
 
-	resp, err := f.client.Get(url)
+	// Create request with User-Agent
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, false, err
+	}
+	req.Header.Set("User-Agent", UserAgent)
+
+	resp, err := f.client.Do(req)
 	if err != nil {
 		return nil, false, err
 	}

@@ -2,30 +2,20 @@
 
 [![Go](https://github.com/kuniyoshi/fukumimi/actions/workflows/go.yml/badge.svg)](https://github.com/kuniyoshi/fukumimi/actions/workflows/go.yml)
 
-`fukumimi` is a CLI tool for retrieving and tracking radio show episodes from a login-protected fan club website.
+`fukumimi` is a CLI tool for retrieving and tracking radio show episodes from a fan club website.
 It helps you manage local read/unread status for each broadcast.
 
 ## ✨ Features
 
-- Login form automation (cookie-based session management)
-- Fetch and store radio show episodes lists
+- Fetch radio show episodes from public website
 - Track listened/unlistened status
 - Output in Markdown format
 
 ## 🚀 Usage
 
-### Initial login
-
-You will be prompted for login credentials on first run.
-Once authenticated, session cookies are saved and reused for future commands.
-
-```bash
-% fukumimi login
-```
-
 ### Fetch radio show episodes
 
-Retrieve the radio show episodes from the fan club site and store them locally.
+Retrieve all radio show episodes from the fan club website.
 
 ```bash
 % fukumimi fetch
@@ -58,8 +48,6 @@ Merge new radio show episodes to local state manage.
 
 - Built as a single binary CLI tool for portability and simplicity
 - Designed to minimize dependencies and require no GUI interaction
-- Stores session cookies locally to avoid repeated logins
-- Uses browser-like form submission to support login with auto-filled credentials
 - Tracks state using plain text (Markdown) for readability and Git-friendly diffs
 - Written in Go for fast execution and easy distribution
 
@@ -81,9 +69,6 @@ make build
 
 ## Commands
 
-### `fukumimi login`
-Authenticate with the fan club website. Credentials are requested interactively and session cookies are stored in `~/.fukumimi_cookies`.
-
 ### `fukumimi fetch`
 Fetch all radio show episodes from the fan club website. Outputs episode list in markdown format to stdout.
 
@@ -94,9 +79,6 @@ Options:
 - `-r, --replace`: Update the local file in-place instead of outputting to stdout
 
 ## Implementation Details
-
-### Cookie Storage
-Session cookies are stored in `~/.fukumimi_cookies` as JSON. The login session is reused automatically for subsequent commands.
 
 ### Episode Format
 Episodes are output in the following format:
