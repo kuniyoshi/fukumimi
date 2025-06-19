@@ -32,6 +32,7 @@ The intended architecture (from README.md):
 4. Use `make build` to build the binary
 5. Use `make run-login` to test the login command
 6. Cookie files are stored in user's home directory as `.fukumimi_cookies`
+7. After finished an work, run go fmt to tidy up code base
 
 ## Build and Test Commands
 
