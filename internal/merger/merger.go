@@ -20,8 +20,8 @@ func New() *Merger {
 }
 
 // ParseEpisodeLine parses a line in the format:
-// [ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
-// [x] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
+// - [ ] [06/11](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55) (#39)
+// - [x] [05/28](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54) (#37)
 func (m *Merger) ParseEpisodeLine(line string) (*models.Episode, error) {
 	// Skip empty lines
 	line = strings.TrimSpace(line)
@@ -29,11 +29,16 @@ func (m *Merger) ParseEpisodeLine(line string) (*models.Episode, error) {
 		return nil, nil
 	}
 
-	// Check if listened
-	isListened := strings.HasPrefix(line, "[x]")
+	// Check if this is an episode line
+	if !strings.HasPrefix(line, "- [") {
+		return nil, nil
+	}
 
-	// Extract date (MM/DD)
-	dateMatch := regexp.MustCompile(`\[.\]\s+(\d{2})/(\d{2})`).FindStringSubmatch(line)
+	// Check if listened
+	isListened := strings.Contains(line, "[x]")
+
+	// Extract date from [MM/DD] format
+	dateMatch := regexp.MustCompile(`\[(\d{2})/(\d{2})\]`).FindStringSubmatch(line)
 	if len(dateMatch) < 3 {
 		return nil, fmt.Errorf("invalid episode format: %s", line)
 	}
@@ -41,17 +46,17 @@ func (m *Merger) ParseEpisodeLine(line string) (*models.Episode, error) {
 	month, _ := strconv.Atoi(dateMatch[1])
 	day, _ := strconv.Atoi(dateMatch[2])
 
-	// Extract episode number
-	numberMatch := regexp.MustCompile(`\[(#\d+)\]`).FindStringSubmatch(line)
+	// Extract episode number from (#NNN) format
+	numberMatch := regexp.MustCompile(`\((#\d+)\)$`).FindStringSubmatch(line)
 	if len(numberMatch) < 2 {
 		return nil, fmt.Errorf("episode number not found: %s", line)
 	}
 
-	// Extract URL
-	urlMatch := regexp.MustCompile(`\((https?://[^)]+)\)`).FindStringSubmatch(line)
+	// Extract URL from markdown link
+	urlMatch := regexp.MustCompile(`\[(\d{2}/\d{2})\]\((https?://[^)]+)\)`).FindStringSubmatch(line)
 	url := ""
-	if len(urlMatch) >= 2 {
-		url = urlMatch[1]
+	if len(urlMatch) >= 3 {
+		url = urlMatch[2]
 	}
 
 	return &models.Episode{

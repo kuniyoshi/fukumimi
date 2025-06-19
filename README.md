@@ -29,9 +29,9 @@ Retrieve the radio show episodes from the fan club site and store them locally.
 
 ```bash
 % fukumimi fetch
-[ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
-[ ] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[ ] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+- [ ] [06/11](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55) (#38)
+- [ ] [05/28](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54) (#37)
+- [ ] [05/09](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53) (#36)
 ...
 ```
 
@@ -41,17 +41,17 @@ Merge new radio show episodes to local state manage.
 
 ```bash
 % fukumimi fetch
-[ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
-[ ] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[ ] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+- [ ] [06/11](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55) (#38)
+- [ ] [05/28](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54) (#37)
+- [ ] [05/09](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53) (#36)
 ...
 % cat local
-[x] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[x] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+- [x] [05/28](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54) (#37)
+- [x] [05/09](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53) (#36)
 % fukumimi fetch | fukumimi merge local
-[ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
-[x] 05/28 [#37](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54)
-[x] 05/09 [#36](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53)
+- [ ] [06/11](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55) (#38)
+- [x] [05/28](https://kitoakari-fc.com/special_contents/?contents_id=1&id=54) (#37)
+- [x] [05/09](https://kitoakari-fc.com/special_contents/?contents_id=1&id=53) (#36)
 ```
 
 ## Design
@@ -101,8 +101,8 @@ Session cookies are stored in `~/.fukumimi_cookies` as JSON. The login session i
 ### Episode Format
 Episodes are output in the following format:
 ```
-[ ] MM/DD [#NNN](URL)
-[x] MM/DD [#NNN](URL)
+- [ ] [MM/DD](URL) (#NNN)
+- [x] [MM/DD](URL) (#NNN)
 ```
 - `[ ]` indicates an unlistened episode
 - `[x]` indicates a listened episode

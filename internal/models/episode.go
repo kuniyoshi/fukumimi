@@ -18,9 +18,10 @@ func (e Episode) String() string {
 		listenedMark = "[x]"
 	}
 
-	// Format: [ ] 06/11 [#38](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55)
+	// Format: - [ ] [06/11](https://kitoakari-fc.com/special_contents/?contents_id=1&id=55) (#39)
+	dateStr := fmt.Sprintf("%02d/%02d", e.Date.Month(), e.Date.Day())
 	if e.URL != "" {
-		return fmt.Sprintf("%s %02d/%02d [%s](%s)", listenedMark, e.Date.Month(), e.Date.Day(), e.Number, e.URL)
+		return fmt.Sprintf("- %s [%s](%s) (%s)", listenedMark, dateStr, e.URL, e.Number)
 	}
-	return fmt.Sprintf("%s %02d/%02d [%s]", listenedMark, e.Date.Month(), e.Date.Day(), e.Number)
+	return fmt.Sprintf("- %s %s (%s)", listenedMark, dateStr, e.Number)
 }
