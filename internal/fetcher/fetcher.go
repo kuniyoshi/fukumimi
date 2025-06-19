@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -135,14 +136,6 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 			}
 		}
 
-		// Follow the URL if episode.URL exists to find the streaming page
-		if episode.URL != "" {
-			streamingURL, err := f.followURL(episode.URL)
-			if err == nil && streamingURL != "" {
-				episode.URL = streamingURL
-			}
-		}
-
 		// Only add if we found an episode number and it's not a duplicate
 		if episode.Number != "" && episode.URL != "" {
 			// Check for duplicates
@@ -158,6 +151,9 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 			}
 		}
 	})
+
+	// Follow URLs concurrently to find streaming pages
+	f.followURLsConcurrently(episodes)
 
 	// Check if there's a next page - look for various pagination patterns
 	hasMore := false
@@ -229,6 +225,34 @@ func (f *Fetcher) followURL(url string) (string, error) {
 	})
 
 	return streamingURL, nil
+}
+
+func (f *Fetcher) followURLsConcurrently(episodes []models.Episode) {
+	const maxConcurrency = 10 // Limit concurrent requests to avoid overwhelming the server
+	
+	// Create a channel to limit concurrency
+	semaphore := make(chan struct{}, maxConcurrency)
+	var wg sync.WaitGroup
+	
+	for i := range episodes {
+		if episodes[i].URL != "" {
+			wg.Add(1)
+			go func(episodeIndex int) {
+				defer wg.Done()
+				
+				// Acquire semaphore
+				semaphore <- struct{}{}
+				defer func() { <-semaphore }()
+				
+				streamingURL, err := f.followURL(episodes[episodeIndex].URL)
+				if err == nil && streamingURL != "" {
+					episodes[episodeIndex].URL = streamingURL
+				}
+			}(i)
+		}
+	}
+	
+	wg.Wait()
 }
 
 func (f *Fetcher) GenerateMarkdown(episodes []models.Episode) string {
