@@ -1,5 +1,7 @@
 # fukumimi
 
+[![Go](https://github.com/kuniyoshi/fukumimi/actions/workflows/go.yml/badge.svg)](https://github.com/kuniyoshi/fukumimi/actions/workflows/go.yml)
+
 `fukumimi` is a CLI tool for retrieving and tracking radio show episodes from a login-protected fan club website.
 It helps you manage local read/unread status for each broadcast.
 
