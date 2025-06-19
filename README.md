@@ -61,14 +61,61 @@ Merge new radio show episodes to local state manage.
 - Tracks state using plain text (Markdown) for readability and Git-friendly diffs
 - Written in Go for fast execution and easy distribution
 
-## Specification
+## Installation
 
-*Login URL*
-https://kitoakari-fc.com/slogin.php
+Install using Go:
 
-*Radio show episodes*
+```bash
+go install github.com/kuniyoshi/fukumimi@latest
+```
 
-https://kitoakari-fc.com/special_contents/?category_id=4&page=1
+Or clone and build locally:
 
-The URL has pagenation.
+```bash
+git clone https://github.com/kuniyoshi/fukumimi.git
+cd fukumimi
+make build
+```
+
+## Commands
+
+### `fukumimi login`
+Authenticate with the fan club website. Credentials are requested interactively and session cookies are stored in `~/.fukumimi_cookies`.
+
+### `fukumimi fetch`
+Fetch all radio show episodes from the fan club website. Outputs episode list in markdown format to stdout.
+
+### `fukumimi merge <filename>`
+Merge fetched episodes with a local file containing listened status. Preserves `[x]` marks for previously listened episodes.
+
+Options:
+- `-r, --replace`: Update the local file in-place instead of outputting to stdout
+
+## Implementation Details
+
+### Cookie Storage
+Session cookies are stored in `~/.fukumimi_cookies` as JSON. The login session is reused automatically for subsequent commands.
+
+### Episode Format
+Episodes are output in the following format:
+```
+[ ] MM/DD [#NNN](URL)
+[x] MM/DD [#NNN](URL)
+```
+- `[ ]` indicates an unlistened episode
+- `[x]` indicates a listened episode
+- Episodes are sorted by episode number (newest first)
+
+### Merge Behavior
+The merge command reads new episodes from stdin and preserves the listened status from the local file based on episode numbers.
+
+## Development
+
+```bash
+make build      # Build the binary
+make test       # Run tests
+make fmt        # Format code
+make vet        # Run go vet
+make check      # Run all quality checks
+```
 
