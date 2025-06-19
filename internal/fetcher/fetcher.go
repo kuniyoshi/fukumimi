@@ -1,8 +1,12 @@
 package fetcher
 
 import (
+	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,7 +21,13 @@ const (
 	episodesURL = "https://kitoakari-fc.com/special_contents/?category_id=4&page=%d"
 	// UserAgent identifies this client
 	UserAgent = "Fukumimi/0.1.0 (https://github.com/kuniyoshi/fukumimi)"
+	// Cache directory for URL following results
+	cacheDir = ".fukumimi-cache"
 )
+
+type cacheEntry struct {
+	URL string `json:"url"`
+}
 
 type Fetcher struct {
 	client *http.Client
@@ -184,6 +194,11 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 }
 
 func (f *Fetcher) followURL(url string) (string, error) {
+	// Check cache first
+	if cachedURL, found := f.getCachedURL(url); found {
+		return cachedURL, nil
+	}
+
 	// Create request with User-Agent
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -224,6 +239,11 @@ func (f *Fetcher) followURL(url string) (string, error) {
 		}
 	})
 
+	// Cache the result
+	if streamingURL != "" {
+		f.cacheURL(url, streamingURL)
+	}
+
 	return streamingURL, nil
 }
 
@@ -253,6 +273,50 @@ func (f *Fetcher) followURLsConcurrently(episodes []models.Episode) {
 	}
 	
 	wg.Wait()
+}
+
+func (f *Fetcher) getCacheFilePath(url string) string {
+	// Create a hash of the URL to use as filename
+	hasher := sha256.New()
+	hasher.Write([]byte(url))
+	hash := fmt.Sprintf("%x", hasher.Sum(nil))
+	return filepath.Join(cacheDir, hash+".json")
+}
+
+func (f *Fetcher) getCachedURL(url string) (string, bool) {
+	cacheFile := f.getCacheFilePath(url)
+	
+	// Check if cache file exists
+	data, err := os.ReadFile(cacheFile)
+	if err != nil {
+		return "", false
+	}
+	
+	var entry cacheEntry
+	if err := json.Unmarshal(data, &entry); err != nil {
+		return "", false
+	}
+	
+	return entry.URL, true
+}
+
+func (f *Fetcher) cacheURL(originalURL, streamingURL string) {
+	// Ensure cache directory exists
+	if err := os.MkdirAll(cacheDir, 0755); err != nil {
+		return // Silently fail if we can't create cache directory
+	}
+	
+	entry := cacheEntry{
+		URL: streamingURL,
+	}
+	
+	data, err := json.Marshal(entry)
+	if err != nil {
+		return // Silently fail if we can't marshal
+	}
+	
+	cacheFile := f.getCacheFilePath(originalURL)
+	os.WriteFile(cacheFile, data, 0644) // Silently fail if we can't write
 }
 
 func (f *Fetcher) GenerateMarkdown(episodes []models.Episode) string {
