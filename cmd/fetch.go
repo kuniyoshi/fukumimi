@@ -12,8 +12,11 @@ var fetchCmd = &cobra.Command{
 	Short: "Fetch radio show episodes",
 	Long:  `Fetch all radio show episodes from the fan club website and output as markdown.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// Remove debug messages - output only markdown
+		ignoreCache, _ := cmd.Flags().GetBool("ignore-cache")
+		
 		f := fetcher.New()
+		f.SetIgnoreCache(ignoreCache)
+		
 		episodes, err := f.FetchEpisodes()
 		if err != nil {
 			return fmt.Errorf("failed to fetch episodes: %w", err)
@@ -28,5 +31,6 @@ var fetchCmd = &cobra.Command{
 }
 
 func init() {
+	fetchCmd.Flags().BoolP("ignore-cache", "i", false, "Ignore cache and fetch fresh data (still updates cache)")
 	rootCmd.AddCommand(fetchCmd)
 }

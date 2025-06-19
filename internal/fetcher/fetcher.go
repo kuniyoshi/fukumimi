@@ -30,13 +30,18 @@ type cacheEntry struct {
 }
 
 type Fetcher struct {
-	client *http.Client
+	client      *http.Client
+	IgnoreCache bool
 }
 
 func New() *Fetcher {
 	return &Fetcher{
 		client: &http.Client{},
 	}
+}
+
+func (f *Fetcher) SetIgnoreCache(ignore bool) {
+	f.IgnoreCache = ignore
 }
 
 func (f *Fetcher) FetchEpisodes() ([]models.Episode, error) {
@@ -194,9 +199,11 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 }
 
 func (f *Fetcher) followURL(url string) (string, error) {
-	// Check cache first
-	if cachedURL, found := f.getCachedURL(url); found {
-		return cachedURL, nil
+	// Check cache first (unless ignoring cache)
+	if !f.IgnoreCache {
+		if cachedURL, found := f.getCachedURL(url); found {
+			return cachedURL, nil
+		}
 	}
 
 	// Create request with User-Agent

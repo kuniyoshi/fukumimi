@@ -42,3 +42,6 @@ Thumbs.db
 
 # Claude AI assistant files
 .claude/
+
+# Cache directory
+.fukumimi-cache/
