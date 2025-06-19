@@ -135,6 +135,14 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 			}
 		}
 
+		// Follow the URL if episode.URL exists to find the streaming page
+		if episode.URL != "" {
+			streamingURL, err := f.followURL(episode.URL)
+			if err == nil && streamingURL != "" {
+				episode.URL = streamingURL
+			}
+		}
+
 		// Only add if we found an episode number and it's not a duplicate
 		if episode.Number != "" && episode.URL != "" {
 			// Check for duplicates
@@ -177,6 +185,50 @@ func (f *Fetcher) fetchPage(page int) ([]models.Episode, bool, error) {
 	}
 
 	return episodes, hasMore, nil
+}
+
+func (f *Fetcher) followURL(url string) (string, error) {
+	// Create request with User-Agent
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("User-Agent", UserAgent)
+
+	resp, err := f.client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	// Look for links with text '配信ページはこちら'
+	var streamingURL string
+	doc.Find("a").Each(func(i int, s *goquery.Selection) {
+		linkText := strings.TrimSpace(s.Text())
+		if linkText == "配信ページはこちら" {
+			if href, exists := s.Attr("href"); exists {
+				// Make URL absolute if it's relative
+				if strings.HasPrefix(href, "/") {
+					streamingURL = "https://kitoakari-fc.com" + href
+				} else if strings.HasPrefix(href, "http") {
+					streamingURL = href
+				} else {
+					streamingURL = "https://kitoakari-fc.com/" + href
+				}
+			}
+		}
+	})
+
+	return streamingURL, nil
 }
 
 func (f *Fetcher) GenerateMarkdown(episodes []models.Episode) string {
