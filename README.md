@@ -10,6 +10,8 @@ It helps you manage local read/unread status for each broadcast.
 - Fetch radio show episodes from public website
 - Track listened/unlistened status
 - Output in Markdown format
+- Disk-based caching for improved performance
+- Concurrent URL processing for faster fetching
 
 ## 🚀 Usage
 
@@ -72,6 +74,9 @@ make build
 ### `fukumimi fetch`
 Fetch all radio show episodes from the fan club website. Outputs episode list in markdown format to stdout.
 
+Options:
+- `-i, --ignore-cache`: Ignore cache and fetch fresh data (still updates cache)
+
 ### `fukumimi merge <filename>`
 Merge fetched episodes with a local file containing listened status. Preserves `[x]` marks for previously listened episodes.
 
@@ -92,6 +97,13 @@ Episodes are output in the following format:
 
 ### Merge Behavior
 The merge command reads new episodes from stdin and preserves the listened status from the local file based on episode numbers.
+
+### Caching
+fukumimi uses disk-based caching to improve performance and reduce load on the fan club website:
+- Cache files are stored in `.fukumimi-cache/` directory
+- Cache persists indefinitely until manually cleared
+- Use `--ignore-cache` flag to bypass cache reading while still updating it
+- Cache is automatically created and managed
 
 ## Development
 

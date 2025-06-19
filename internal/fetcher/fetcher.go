@@ -256,21 +256,21 @@ func (f *Fetcher) followURL(url string) (string, error) {
 
 func (f *Fetcher) followURLsConcurrently(episodes []models.Episode) {
 	const maxConcurrency = 10 // Limit concurrent requests to avoid overwhelming the server
-	
+
 	// Create a channel to limit concurrency
 	semaphore := make(chan struct{}, maxConcurrency)
 	var wg sync.WaitGroup
-	
+
 	for i := range episodes {
 		if episodes[i].URL != "" {
 			wg.Add(1)
 			go func(episodeIndex int) {
 				defer wg.Done()
-				
+
 				// Acquire semaphore
 				semaphore <- struct{}{}
 				defer func() { <-semaphore }()
-				
+
 				streamingURL, err := f.followURL(episodes[episodeIndex].URL)
 				if err == nil && streamingURL != "" {
 					episodes[episodeIndex].URL = streamingURL
@@ -278,7 +278,7 @@ func (f *Fetcher) followURLsConcurrently(episodes []models.Episode) {
 			}(i)
 		}
 	}
-	
+
 	wg.Wait()
 }
 
@@ -292,18 +292,18 @@ func (f *Fetcher) getCacheFilePath(url string) string {
 
 func (f *Fetcher) getCachedURL(url string) (string, bool) {
 	cacheFile := f.getCacheFilePath(url)
-	
+
 	// Check if cache file exists
 	data, err := os.ReadFile(cacheFile)
 	if err != nil {
 		return "", false
 	}
-	
+
 	var entry cacheEntry
 	if err := json.Unmarshal(data, &entry); err != nil {
 		return "", false
 	}
-	
+
 	return entry.URL, true
 }
 
@@ -312,16 +312,16 @@ func (f *Fetcher) cacheURL(originalURL, streamingURL string) {
 	if err := os.MkdirAll(cacheDir, 0755); err != nil {
 		return // Silently fail if we can't create cache directory
 	}
-	
+
 	entry := cacheEntry{
 		URL: streamingURL,
 	}
-	
+
 	data, err := json.Marshal(entry)
 	if err != nil {
 		return // Silently fail if we can't marshal
 	}
-	
+
 	cacheFile := f.getCacheFilePath(originalURL)
 	os.WriteFile(cacheFile, data, 0644) // Silently fail if we can't write
 }
