@@ -42,13 +42,13 @@ type customTransport struct {
 func (t *customTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	// Set User-Agent header
 	req.Header.Set("User-Agent", UserAgent)
-	
+
 	return t.base.RoundTrip(req)
 }
 
 func NewClient() *Client {
 	jar, _ := cookiejar.New(nil)
-	
+
 	// Create HTTP client with custom transport to set User-Agent
 	transport := &customTransport{
 		base: http.DefaultTransport,
@@ -57,7 +57,7 @@ func NewClient() *Client {
 		Jar:       jar,
 		Transport: transport,
 	}
-	
+
 	return &Client{
 		httpClient: client,
 		jar:        jar,
