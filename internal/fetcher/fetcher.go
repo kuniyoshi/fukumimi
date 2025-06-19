@@ -20,7 +20,7 @@ import (
 const (
 	episodesURL = "https://kitoakari-fc.com/special_contents/?category_id=4&page=%d"
 	// UserAgent identifies this client
-	UserAgent = "Fukumimi/0.1.0 (https://github.com/kuniyoshi/fukumimi)"
+	UserAgent = "Fukumimi/0.2.0 (https://github.com/kuniyoshi/fukumimi)"
 	// Cache directory for URL following results
 	cacheDir = ".fukumimi-cache"
 )
